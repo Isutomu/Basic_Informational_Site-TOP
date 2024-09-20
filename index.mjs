@@ -18,6 +18,12 @@ const server = http.createServer(async function (req, res) {
       file = "./404.html";
   }
 
+  if ("404.html" in file) {
+    res.writeHead(404, { "Content-Type": "text/html" });
+  } else {
+    res.writeHead(200, { "Content-Type": "text/html" });
+  }
+
   const data = await fs.readFile(file);
   res.write(data);
   res.end();
