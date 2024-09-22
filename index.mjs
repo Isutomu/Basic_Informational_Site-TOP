@@ -1,32 +1,25 @@
-import http from "node:http";
+import "dotenv/config";
+import express from "express";
 import fs from "node:fs/promises";
 
-const server = http.createServer(async function (req, res) {
-  let file;
+const PORT = process.env.PORT || 8080;
+const app = express();
 
-  switch (req.url) {
-    case "/":
-      file = "./index.html";
-      break;
-    case "/about":
-      file = "./about.html";
-      break;
-    case "/contact-me":
-      file = "./contact-me.html";
-      break;
-    default:
-      file = "./404.html";
-  }
-
-  if ("404.html" in file) {
-    res.writeHead(404, { "Content-Type": "text/html" });
-  } else {
-    res.writeHead(200, { "Content-Type": "text/html" });
-  }
-
-  const data = await fs.readFile(file);
+app.get("/", async function (req, res) {
+  const data = await fs.readFile("./index.html");
   res.write(data);
-  res.end();
+});
+app.get("/about", async function (req, res) {
+  const data = await fs.readFile("./about.html");
+  res.write(data);
+});
+app.get("/contact-me", async function (req, res) {
+  const data = await fs.readFile("./contact-me.html");
+  res.write(data);
+});
+app.get("*", async function (req, res) {
+  const data = await fs.readFile("./404.html");
+  res.write(data);
 });
 
-server.listen(8080);
+app.listen(PORT, () => console.log(`Properly ported and running on ${PORT}`));
